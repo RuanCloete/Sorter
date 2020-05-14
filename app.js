@@ -25,7 +25,7 @@ function randomArray() {
         document.getElementById('columns').insertAdjacentHTML('beforeend', '<div class= "individualColumn" style="height:' + columnInt + 'px"></div>');
     }
     setFlags('activate');
-    changeColors('MidnightBlue', '#D33E43');
+    changeColors('whitesmoke', 'whitesmoke');
     return;
 }
 
@@ -42,13 +42,13 @@ function sortMethod(method) {
         addEvents('remove');
         changeColors('darkred', 'lightsalmon');
         flagResetButton = 0;
-        quickSortAction(0, array.length - 1);
+        quickSort(0, array.length - 1);
         setFlags('deactivate');
     } else if (method == 'bubble' && flagSortBubble == 1) {
         addEvents('remove');
         changeColors('darkred', 'lightsalmon');
         flagResetButton = 0;
-        bubbleSortAction();
+        bubbleSort();
         setFlags('deactivate');
     } else if (method == 'merge' && flagSortMerge == 1) {
         addEvents('remove');
@@ -104,123 +104,113 @@ function changeColors(gradient1, gradient2) {
 }
 
 // function sorting divs utilizing the popular quick sort algorhitm. arguments for recursion purposes.
-function quickSortAction(first, last) {
-    if(flagSortQuick == 1) {
-        quickSort(first, last);
-        function quickSort(first, last) {
-            if (first >= last) {
-                return;
+function quickSort(first, last) {
+    if (first >= last) {
+        return;
+    }
+    let animations1Index = 0;
+    let animations1 = [];
+    let flagSwap = 0;
+    let pivotIndex = first;
+    let pivotValue = array[last];
+    for (let i = first; i < last; i++) {
+        if (array[i] < pivotValue) {
+            flagSwap++; // flag used in if statement to make the relationship between doSetTimeout -and swapIndex function synchronous as setTimeout runs asynchronously.
+            doSetTimeout(i);
+            function doSetTimeout(i) {
+                setTimeout(() => {
+                    const individualColumnHeight1 = individualColumn[i].style.height;
+                    const individualColumnHeight2 = individualColumn[pivotIndex].style.height;
+                    animations1.push([i, pivotIndex, individualColumnHeight1, individualColumnHeight2]);
+                    let [indOneIdx, indTwoIdx, heightNew1, heightNew2] = animations1[animations1Index];
+                    let indOneStyle = individualColumn[indOneIdx].style;
+                    let indTwoStyle = individualColumn[indTwoIdx].style;
+                    let indThreeStyle = individualColumn[last].style
+                    indOneStyle.backgroundColor = '#004346';
+                    indTwoStyle.backgroundColor = '#004346';
+                    indThreeStyle.backgroundColor = '#228CDB';
+                    setTimeout(() => {
+                        indOneStyle.backgroundColor = 'whitesmoke';
+                        indTwoStyle.backgroundColor = 'whitesmoke';
+                    }, 10);
+                    indOneStyle.height = heightNew2;
+                    indTwoStyle.height = heightNew1;
+                    swap(array, i, pivotIndex);
+                    pivotIndex++;
+                    animations1Index++; // animations1Index variable used in conjunction with flagSwap variable.
+                    if (flagSwap == animations1Index) {
+                        swapIndex();
+                        indThreeStyle.backgroundColor = 'whitesmoke';
+                    }
+                }, flagSwap * 30);
             }
-            let animations1Index = 0;
-            let animations1 = [];
-            let flagSwap = 0;
-            let pivotIndex = first;
-            let pivotValue = array[last];
-            for (let i = first; i < last; i++) {
-                if (array[i] < pivotValue) {
-                    flagSwap++; // flag used in if statement to make the relationship between doSetTimeout -and swapIndex function synchronous as setTimeout runs asynchronously.
-                    doSetTimeout(i);
-                    function doSetTimeout(i) {
-                        setTimeout(() => {
-                            const individualColumnHeight1 = individualColumn[i].style.height;
-                            const individualColumnHeight2 = individualColumn[pivotIndex].style.height;
-                            animations1.push([i, pivotIndex, individualColumnHeight1, individualColumnHeight2]);
-                            let [indOneIdx, indTwoIdx, heightNew1, heightNew2] = animations1[animations1Index];
-                            let indOneStyle = individualColumn[indOneIdx].style;
-                            let indTwoStyle = individualColumn[indTwoIdx].style;
-                            let indThreeStyle = individualColumn[last].style
-                            indOneStyle.backgroundColor = '#004346';
-                            indTwoStyle.backgroundColor = '#004346';
-                            indThreeStyle.backgroundColor = '#228CDB';
+        }
+    }
+    if (flagSwap == 0) {
+        swapIndex();
+    }
+    function swapIndex() {
+        const individualColumnHeight1 = individualColumn[pivotIndex].style.height;
+        const individualColumnHeight2 = individualColumn[last].style.height;
+        let animations2 = [pivotIndex, last, individualColumnHeight1, individualColumnHeight2];
+        let [indOneIdx, indTwoIdx, heightNew1, heightNew2] = animations2;
+        let indOneStyle = individualColumn[indOneIdx].style;
+        let indTwoStyle = individualColumn[indTwoIdx].style;
+        indOneStyle.height = heightNew2;
+        indTwoStyle.height = heightNew1;
+        swap(array, pivotIndex, last);
+        flagVerification();
+        // Promise.all used to make rucursion asynchronous
+        Promise.all([
+            quickSort(pivotIndex + 1, last),
+            quickSort(first, pivotIndex - 1)
+        ]);
+    }
+    return;
+}
+
+function bubbleSort() {
+    if (t < arrayLength) {
+        let animations = [];
+        for (s = 0; s < array.length - t - 1; s++) {
+            doSetTimeout(s);
+            function doSetTimeout(s) {
+                setTimeout(() => {
+                    const individualColumnHeight1 = individualColumn[s].style.height;
+                    const individualColumnHeight2 = individualColumn[s + 1].style.height;
+                    animations.push([s, s + 1, individualColumnHeight1, individualColumnHeight2]);
+                    let [indOneIdx, indTwoIdx, heightNew1, heightNew2] = animations[s];
+                    let indOneStyle = individualColumn[indOneIdx].style;
+                    let indTwoStyle = individualColumn[indTwoIdx].style;
+                    a = s;
+                    b = s + 1;
+                    if (array[a] > array[b]) {
+                        animations[s].push('compared');
+                        compared1 = animations[s].splice(-1, 1);
+                        compared1Str = compared1[0];
+                        if (compared1Str === 'compared') {
+                            indOneStyle.backgroundColor = '#228CDB';
+                            indTwoStyle.backgroundColor = '#228CDB';
                             setTimeout(() => {
                                 indOneStyle.backgroundColor = 'whitesmoke';
                                 indTwoStyle.backgroundColor = 'whitesmoke';
-                            }, 10);
-                            indOneStyle.height = heightNew2;
-                            indTwoStyle.height = heightNew1;
-                            swap(array, i, pivotIndex);
-                            pivotIndex++;
-                            animations1Index++; // animations1Index variable used in conjunction with flagSwap variable.
-                            if (flagSwap == animations1Index) {
-                                swapIndex();
-                                indThreeStyle.backgroundColor = 'whitesmoke';
-                            }
-                        }, flagSwap * 30);
+                            }, 0);
+                        }
+                        indOneStyle.height = heightNew2;
+                        indTwoStyle.height = heightNew1;
+                        swap(array, a, b);
                     }
-                }
-            }
-            if (flagSwap == 0) {
-                swapIndex();
-            }
-            function swapIndex() {
-                const individualColumnHeight1 = individualColumn[pivotIndex].style.height;
-                const individualColumnHeight2 = individualColumn[last].style.height;
-                let animations2 = [pivotIndex, last, individualColumnHeight1, individualColumnHeight2];
-                let [indOneIdx, indTwoIdx, heightNew1, heightNew2] = animations2;
-                let indOneStyle = individualColumn[indOneIdx].style;
-                let indTwoStyle = individualColumn[indTwoIdx].style;
-                indOneStyle.height = heightNew2;
-                indTwoStyle.height = heightNew1;
-                swap(array, pivotIndex, last);
-                flagVerification();
-                // Promise.all used to make rucursion asynchronous
-                Promise.all([
-                    quickSort(pivotIndex + 1, last),
-                    quickSort(first, pivotIndex - 1)
-                ]);
-            }
-            return;
-        }
-    }
-}
-
-function bubbleSortAction() {
-    if(flagSortQuick == 1) {
-        bubbleSort();
-        function bubbleSort() {
-            if (t < arrayLength) {
-                let animations = [];
-                for (s = 0; s < array.length - t - 1; s++) {
-                    doSetTimeout(s);
-                    function doSetTimeout(s) {
-                        setTimeout(() => {
-                            const individualColumnHeight1 = individualColumn[s].style.height;
-                            const individualColumnHeight2 = individualColumn[s + 1].style.height;
-                            animations.push([s, s + 1, individualColumnHeight1, individualColumnHeight2]);
-                            let [indOneIdx, indTwoIdx, heightNew1, heightNew2] = animations[s];
-                            let indOneStyle = individualColumn[indOneIdx].style;
-                            let indTwoStyle = individualColumn[indTwoIdx].style;
-                            a = s;
-                            b = s + 1;
-                            if (array[a] > array[b]) {
-                                animations[s].push('compared');
-                                compared1 = animations[s].splice(-1, 1);
-                                compared1Str = compared1[0];
-                                if (compared1Str === 'compared') {
-                                    indOneStyle.backgroundColor = '#228CDB';
-                                    indTwoStyle.backgroundColor = '#228CDB';
-                                    setTimeout(() => {
-                                        indOneStyle.backgroundColor = 'whitesmoke';
-                                        indTwoStyle.backgroundColor = 'whitesmoke';
-                                    }, 0);
-                                }
-                                indOneStyle.height = heightNew2;
-                                indTwoStyle.height = heightNew1;
-                                swap(array, a, b);
-                            }
-                        }, s * 2);
-                    }
-                }
-                t++;
-                setTimeout(() => {
-                    s = 0;
-                    bubbleSort();
                 }, s * 2);
-            } else if (t == arrayLength) {
-                flagVerification();
-                return;
             }
         }
+        t++;
+        setTimeout(() => {
+            s = 0;
+            bubbleSort();
+        }, s * 2);
+    } else if (t == arrayLength) {
+        flagVerification();
+        return;
     }
 }
 
@@ -277,27 +267,25 @@ function mergeSortMain(arrayMain, firstIdx, halfIdx, lastIdx, arrayHolder, anima
 }
 
 function mergeSortAction() {
-    if(flagSortMerge == 1) {
-        const animations = mergeSort(array)
-        for (let i = 0; i < animations.length; i++) {
-            const isColorChange = i % 3 !== 2;
-            if (isColorChange) {
-                const [indOneIdx, indTwoIdx] = animations[i];
-                const indOneStyle = individualColumn[indOneIdx].style;
-                const indTwoStyle = individualColumn[indTwoIdx].style;
-                const color = i % 3 === 0 ? '#228CDB' : 'whitesmoke';
-                setTimeout(() => {
-                    indOneStyle.backgroundColor = color;
-                    indTwoStyle.backgroundColor = color;
-                }, i * 4);
-            } else {
-                const [indOneIdx, heightNew] = animations[i];
-                const indOneStyle = individualColumn[indOneIdx].style;
-                setTimeout(() => {
-                    indOneStyle.height = `${heightNew}px`;
-                    flagVerification()
-                }, i * 4);
-            }
+    const animations = mergeSort(array)
+    for (let i = 0; i < animations.length; i++) {
+        const isColorChange = i % 3 !== 2;
+        if (isColorChange) {
+            const [indOneIdx, indTwoIdx] = animations[i];
+            const indOneStyle = individualColumn[indOneIdx].style;
+            const indTwoStyle = individualColumn[indTwoIdx].style;
+            const color = i % 3 === 0 ? '#228CDB' : 'whitesmoke';
+            setTimeout(() => {
+                indOneStyle.backgroundColor = color;
+                indTwoStyle.backgroundColor = color;
+            }, i * 4);
+        } else {
+            const [indOneIdx, heightNew] = animations[i];
+            const indOneStyle = individualColumn[indOneIdx].style;
+            setTimeout(() => {
+                indOneStyle.height = `${heightNew}px`;
+                flagVerification()
+            }, i * 4);
         }
     }
 }
@@ -316,7 +304,7 @@ function flagVerification() {
         } else if (arrayIndex == array.length - 1 && arrayIndexInteger1 <= arrayIndexInteger2) {
             console.log('finished!');
             resetButton.addEventListener('click', resetArray);
-            resetButton.style.backgroundImage = 'linear-gradient(to bottom right, MidnightBlue , #D33E43 )';
+            resetButton.style.backgroundImage = 'linear-gradient(to bottom right, whitesmoke , whitesmoke)';
             flagResetButton = 1;
             return;
         }
