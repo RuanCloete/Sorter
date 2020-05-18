@@ -25,7 +25,7 @@ function randomArray() {
         document.getElementById('columns').insertAdjacentHTML('beforeend', '<div class= "individualColumn" style="height:' + columnInt + 'px"></div>');
     }
     setFlags('activate');
-    changeColors('whitesmoke', 'whitesmoke');
+    changeColors('whitesmoke', '#424B54');
     return;
 }
 
@@ -40,19 +40,19 @@ function resetArray() {
 function sortMethod(method) {
     if (method == 'quick' && flagSortQuick == 1) {
         addEvents('remove');
-        changeColors('darkred', 'lightsalmon');
+        changeColors('#890023', 'whitesmoke');
         flagResetButton = 0;
         quickSort(0, array.length - 1);
         setFlags('deactivate');
     } else if (method == 'bubble' && flagSortBubble == 1) {
         addEvents('remove');
-        changeColors('darkred', 'lightsalmon');
+        changeColors('#890023', 'whitesmoke');
         flagResetButton = 0;
         bubbleSort();
         setFlags('deactivate');
     } else if (method == 'merge' && flagSortMerge == 1) {
         addEvents('remove');
-        changeColors('darkred', 'lightsalmon');
+        changeColors('#890023', 'whitesmoke');
         flagResetButton = 0;
         mergeSortAction();
         setFlags('deactivate');
@@ -96,11 +96,15 @@ function setFlags(action) {
 }
 
 // function changes button colors, UX purposes.
-function changeColors(gradient1, gradient2) {
-    resetButton.style.backgroundImage = 'linear-gradient(to bottom right ,' + gradient1 + ',' + gradient2 + ')';
-    quickButton.style.backgroundImage = 'linear-gradient(to bottom right ,' + gradient1 + ',' + gradient2 + ')';
-    bubbleButton.style.backgroundImage = 'linear-gradient(to bottom right ,' + gradient1 + ',' + gradient2 + ')';
-    mergeButton.style.backgroundImage = 'linear-gradient(to bottom right ,' + gradient1 + ',' + gradient2 + ')';
+function changeColors(color1, color2) {
+    resetButton.style.backgroundColor = color1;
+    quickButton.style.backgroundColor = color1;
+    bubbleButton.style.backgroundColor = color1;
+    mergeButton.style.backgroundColor = color1;
+    resetButton.style.color = color2;
+    quickButton.style.color = color2;
+    bubbleButton.style.color = color2;
+    mergeButton.style.color = color2;
 }
 
 // function sorting divs utilizing the popular quick sort algorhitm. arguments for recursion purposes.
@@ -126,8 +130,8 @@ function quickSort(first, last) {
                     let indOneStyle = individualColumn[indOneIdx].style;
                     let indTwoStyle = individualColumn[indTwoIdx].style;
                     let indThreeStyle = individualColumn[last].style
-                    indOneStyle.backgroundColor = '#004346';
-                    indTwoStyle.backgroundColor = '#004346';
+                    indOneStyle.backgroundColor = '#890023';
+                    indTwoStyle.backgroundColor = '#890023';
                     indThreeStyle.backgroundColor = '#228CDB';
                     setTimeout(() => {
                         indOneStyle.backgroundColor = 'whitesmoke';
@@ -304,7 +308,8 @@ function flagVerification() {
         } else if (arrayIndex == array.length - 1 && arrayIndexInteger1 <= arrayIndexInteger2) {
             console.log('finished!');
             resetButton.addEventListener('click', resetArray);
-            resetButton.style.backgroundImage = 'linear-gradient(to bottom right, whitesmoke , whitesmoke)';
+            resetButton.style.backgroundColor = 'whitesmoke';
+            resetButton.style.color = '#424B54'
             flagResetButton = 1;
             return;
         }
