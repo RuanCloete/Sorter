@@ -92,8 +92,7 @@ button::before{
     transform: scaleX(0);
 }
 
-button:hover::before,
-button:focus::before {
+button:hover::before {
     transform: scaleX(1);
 }
 
