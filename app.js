@@ -5,7 +5,7 @@ const individualColumn = document.getElementsByClassName('individualColumn');
 // loads array and column divs.
 window.onload = () => {
     randomArray();
-    addEvents('add');
+    addEvents('addEvents');
     setFlags('activate');
 }
 
@@ -20,12 +20,12 @@ function randomArray() {
     window.t = 0;
     window.array = [];
     for (var x = 0; x < arrayLength; x++) {
-        let columnInt = randomIntGenerator(3, 750);
+        let columnInt = randomIntGenerator(3, 600);
         array.push(columnInt);
         document.getElementById('columns').insertAdjacentHTML('beforeend', '<div class= "individualColumn" style="height:' + columnInt + 'px"></div>');
     }
     setFlags('activate');
-    changeColors('whitesmoke', '#424B54');
+    changeColors('#DCDCDC');
     return;
 }
 
@@ -39,20 +39,20 @@ function resetArray() {
 
 function sortMethod(method) {
     if (method == 'quick' && flagSortQuick == 1) {
-        addEvents('remove');
-        changeColors('#890023', 'whitesmoke');
+        addEvents('removeEvents');
+        changeColors('#890023');
         flagResetButton = 0;
         quickSort(0, array.length - 1);
         setFlags('deactivate');
     } else if (method == 'bubble' && flagSortBubble == 1) {
-        addEvents('remove');
-        changeColors('#890023', 'whitesmoke');
+        addEvents('removeEvents');
+        changeColors('#890023');
         flagResetButton = 0;
         bubbleSort();
         setFlags('deactivate');
     } else if (method == 'merge' && flagSortMerge == 1) {
-        addEvents('remove');
-        changeColors('#890023', 'whitesmoke');
+        addEvents('removeEvents');
+        changeColors('#890023');
         flagResetButton = 0;
         mergeSortAction();
         setFlags('deactivate');
@@ -70,12 +70,12 @@ function addEvents(action) {
     let sortMethodQuick = () =>  sortMethod('quick');
     let sortMethodBubble = () =>  sortMethod('bubble');
     let sortMethodMerge = () =>  sortMethod('merge');
-    if(action == 'add') {
+    if(action == 'addEvents') {
         resetButton.addEventListener('click', resetFunction);
         quickButton.addEventListener('click', sortMethodQuick);
         bubbleButton.addEventListener('click', sortMethodBubble);
         mergeButton.addEventListener('click', sortMethodMerge);
-    } else if(action == 'remove'){
+    } else if(action == 'removeEvents'){
         resetButton.removeEventListener('click', resetFunction);
         quickButton.removeEventListener('click', sortMethodQuick);
         bubbleButton.removeEventListener('click', sortMethodBubble);
@@ -96,15 +96,11 @@ function setFlags(action) {
 }
 
 // function changes button colors, UX purposes.
-function changeColors(color1, color2) {
-    resetButton.style.backgroundColor = color1;
-    quickButton.style.backgroundColor = color1;
-    bubbleButton.style.backgroundColor = color1;
-    mergeButton.style.backgroundColor = color1;
-    resetButton.style.color = color2;
-    quickButton.style.color = color2;
-    bubbleButton.style.color = color2;
-    mergeButton.style.color = color2;
+function changeColors(color) {
+    resetButton.style.backgroundColor = color;
+    quickButton.style.backgroundColor = color;
+    bubbleButton.style.backgroundColor = color;
+    mergeButton.style.backgroundColor = color;
 }
 
 // function sorting divs utilizing the popular quick sort algorhitm. arguments for recursion purposes.
@@ -163,12 +159,10 @@ function quickSort(first, last) {
         indOneStyle.height = heightNew2;
         indTwoStyle.height = heightNew1;
         swap(array, pivotIndex, last);
-        flagVerification();
+        sortVerification();
         // Promise.all used to make rucursion asynchronous
-        Promise.all([
-            quickSort(pivotIndex + 1, last),
-            quickSort(first, pivotIndex - 1)
-        ]);
+        quickSort(pivotIndex + 1, last),
+        quickSort(first, pivotIndex - 1)
     }
     return;
 }
@@ -213,7 +207,7 @@ function bubbleSort() {
             bubbleSort();
         }, s * 2);
     } else if (t == arrayLength) {
-        flagVerification();
+        sortVerification();
         return;
     }
 }
@@ -288,14 +282,14 @@ function mergeSortAction() {
             const indOneStyle = individualColumn[indOneIdx].style;
             setTimeout(() => {
                 indOneStyle.height = `${heightNew}px`;
-                flagVerification()
+                sortVerification()
             }, i * 4);
         }
     }
 }
 
 // function verifies if array and divs are sorted
-function flagVerification() {
+function sortVerification() {
     for(let arrayIndex = 1; arrayIndex < array.length; arrayIndex++) {
         let arrayIndex1 = individualColumn[arrayIndex -1].style.height;
         let arrayIndexString1 = arrayIndex1.slice(0, -2);
@@ -306,10 +300,9 @@ function flagVerification() {
         if(arrayIndexInteger1 > arrayIndexInteger2) {
             return;
         } else if (arrayIndex == array.length - 1 && arrayIndexInteger1 <= arrayIndexInteger2) {
-            console.log('finished!');
             resetButton.addEventListener('click', resetArray);
-            resetButton.style.backgroundColor = 'whitesmoke';
-            resetButton.style.color = '#424B54'
+            resetButton.style.backgroundColor = '#DCDCDC';
+            resetButton.style.color = 'black'
             flagResetButton = 1;
             return;
         }
