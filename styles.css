@@ -72,7 +72,6 @@ button {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-    transition: border-width 0.2s, border-radius 0.4s;
 }
 
 button:focus {
@@ -87,7 +86,7 @@ button::before{
     bottom: 0;
     height: 1px;
     background-color: #424B54;
-    transition: transform 300ms ease-in-out;
+    transition: transform 250ms ease-in-out;
 
     transform: scaleX(0);
 }

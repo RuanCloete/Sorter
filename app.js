@@ -1,23 +1,33 @@
-var arrayLength = 140;
+/* 
+Sources:
+https://www.youtube.com/watch?v=67k3I2GxTH8&t
+https://www.youtube.com/watch?v=eqo2LxRADhU&t
+https://www.youtube.com/watch?v=TzerDU-JaY
+
+SPECIAL THANKS: 
+Clément Mihailescu for inspiring me^1 to make AlgoSorter, and his guided implementation of the merge sort algorhytm^2 that helped immensely with the 
+implementation of the quick -and bubble sort.      
+
+1: https://www.youtube.com/watch?v=n4t_-NjY_Sg&t
+2: https://www.youtube.com/watch?v=pFXYym4Wbkc
+*/
+
+const arrayLength = 140;
 var flagResetButton = 1;
 const individualColumn = document.getElementsByClassName('individualColumn');
 
-// loads array and column divs.
 window.onload = () => {
     randomArray();
     addEvents('addEvents');
     setFlags('activate');
 }
 
+// https://stackoverflow.com/questions/363681/how-do-i-generate-random-integers-within-a-specific-range-in-java
 function randomIntGenerator(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+}   
 
 function randomArray() {
-    window.flagSortMerge = 1;
-    window.flagSortBubble = 1;
-    window.s = 0;
-    window.t = 0;
     window.array = [];
     for (var x = 0; x < arrayLength; x++) {
         let columnInt = randomIntGenerator(3, 600);
@@ -42,19 +52,19 @@ function sortMethod(method) {
         addEvents('removeEvents');
         changeColors('#890023');
         flagResetButton = 0;
-        quickSort(0, array.length - 1);
         setFlags('deactivate');
+        quickSortAnimation(0, array.length - 1);
     } else if (method == 'bubble' && flagSortBubble == 1) {
         addEvents('removeEvents');
         changeColors('#890023');
         flagResetButton = 0;
-        bubbleSort();
+        bubbleSortAnimation();
         setFlags('deactivate');
     } else if (method == 'merge' && flagSortMerge == 1) {
         addEvents('removeEvents');
         changeColors('#890023');
         flagResetButton = 0;
-        mergeSortAction();
+        mergeSortAnimation();
         setFlags('deactivate');
     }
 }
@@ -87,7 +97,7 @@ function setFlags(action) {
     if(action == 'activate') {
         window.flagSortQuick = 1;
         window.flagSortBubble = 1;
-        window.falgSortMerge = 1;
+        window.flagSortMerge = 1;
     } else if(action == 'deactivate') {
         window.flagSortQuick = 0;
         window.flagSortBubble = 0;
@@ -103,192 +113,14 @@ function changeColors(color) {
     mergeButton.style.backgroundColor = color;
 }
 
-// function sorting divs utilizing the popular quick sort algorhitm. arguments for recursion purposes.
-function quickSort(first, last) {
-    if (first >= last) {
-        return;
-    }
-    let animations1Index = 0;
-    let animations1 = [];
-    let flagSwap = 0;
-    let pivotIndex = first;
-    let pivotValue = array[last];
-    for (let i = first; i < last; i++) {
-        if (array[i] < pivotValue) {
-            flagSwap++; // flag used in if statement to make the relationship between doSetTimeout -and swapIndex function synchronous as setTimeout runs asynchronously.
-            doSetTimeout(i);
-            function doSetTimeout(i) {
-                setTimeout(() => {
-                    const individualColumnHeight1 = individualColumn[i].style.height;
-                    const individualColumnHeight2 = individualColumn[pivotIndex].style.height;
-                    animations1.push([i, pivotIndex, individualColumnHeight1, individualColumnHeight2]);
-                    let [indOneIdx, indTwoIdx, heightNew1, heightNew2] = animations1[animations1Index];
-                    let indOneStyle = individualColumn[indOneIdx].style;
-                    let indTwoStyle = individualColumn[indTwoIdx].style;
-                    let indThreeStyle = individualColumn[last].style
-                    indOneStyle.backgroundColor = '#890023';
-                    indTwoStyle.backgroundColor = '#890023';
-                    indThreeStyle.backgroundColor = '#228CDB';
-                    setTimeout(() => {
-                        indOneStyle.backgroundColor = 'whitesmoke';
-                        indTwoStyle.backgroundColor = 'whitesmoke';
-                    }, 10);
-                    indOneStyle.height = heightNew2;
-                    indTwoStyle.height = heightNew1;
-                    swap(array, i, pivotIndex);
-                    pivotIndex++;
-                    animations1Index++; // animations1Index variable used in conjunction with flagSwap variable.
-                    if (flagSwap == animations1Index) {
-                        swapIndex();
-                        indThreeStyle.backgroundColor = 'whitesmoke';
-                    }
-                }, flagSwap * 30);
-            }
-        }
-    }
-    if (flagSwap == 0) {
-        swapIndex();
-    }
-    function swapIndex() {
-        const individualColumnHeight1 = individualColumn[pivotIndex].style.height;
-        const individualColumnHeight2 = individualColumn[last].style.height;
-        let animations2 = [pivotIndex, last, individualColumnHeight1, individualColumnHeight2];
-        let [indOneIdx, indTwoIdx, heightNew1, heightNew2] = animations2;
-        let indOneStyle = individualColumn[indOneIdx].style;
-        let indTwoStyle = individualColumn[indTwoIdx].style;
-        indOneStyle.height = heightNew2;
-        indTwoStyle.height = heightNew1;
-        swap(array, pivotIndex, last);
-        sortVerification();
-        // Promise.all used to make rucursion asynchronous
-        quickSort(pivotIndex + 1, last),
-        quickSort(first, pivotIndex - 1)
-    }
-    return;
-}
-
-function bubbleSort() {
-    if (t < arrayLength) {
-        let animations = [];
-        for (s = 0; s < array.length - t - 1; s++) {
-            doSetTimeout(s);
-            function doSetTimeout(s) {
-                setTimeout(() => {
-                    const individualColumnHeight1 = individualColumn[s].style.height;
-                    const individualColumnHeight2 = individualColumn[s + 1].style.height;
-                    animations.push([s, s + 1, individualColumnHeight1, individualColumnHeight2]);
-                    let [indOneIdx, indTwoIdx, heightNew1, heightNew2] = animations[s];
-                    let indOneStyle = individualColumn[indOneIdx].style;
-                    let indTwoStyle = individualColumn[indTwoIdx].style;
-                    a = s;
-                    b = s + 1;
-                    if (array[a] > array[b]) {
-                        animations[s].push('compared');
-                        compared1 = animations[s].splice(-1, 1);
-                        compared1Str = compared1[0];
-                        if (compared1Str === 'compared') {
-                            indOneStyle.backgroundColor = '#228CDB';
-                            indTwoStyle.backgroundColor = '#228CDB';
-                            setTimeout(() => {
-                                indOneStyle.backgroundColor = 'whitesmoke';
-                                indTwoStyle.backgroundColor = 'whitesmoke';
-                            }, 0);
-                        }
-                        indOneStyle.height = heightNew2;
-                        indTwoStyle.height = heightNew1;
-                        swap(array, a, b);
-                    }
-                }, s * 2);
-            }
-        }
-        t++;
-        setTimeout(() => {
-            s = 0;
-            bubbleSort();
-        }, s * 2);
-    } else if (t == arrayLength) {
-        sortVerification();
-        return;
-    }
-}
-
-// function swaps values in an array.
+// function swaps values in an array, used in BubbleSort and QuickSort respectively
 function swap(arr, a, b) {
     let temp = arr[a];
     arr[a] = arr[b];
     arr[b] = temp;
 }
 
-function mergeSort(array) {
-    const animations = [];
-    if (array.length <= 1) return array;
-    const arrayHolder = array.slice();
-    mergeSortFinder(array, 0, array.length - 1, arrayHolder, animations);
-    return animations;
-}
-
-function mergeSortFinder(arrayMain, firstIdx, lastIdx, arrayHolder, animations) {
-    if (firstIdx === lastIdx) return;
-    const halfIdx = Math.floor((firstIdx + lastIdx) / 2);
-    mergeSortFinder(arrayHolder, firstIdx, halfIdx, arrayMain, animations);
-    mergeSortFinder(arrayHolder, halfIdx + 1, lastIdx, arrayMain, animations);
-    mergeSortMain(arrayMain, firstIdx, halfIdx, lastIdx, arrayHolder, animations);
-}
-
-function mergeSortMain(arrayMain, firstIdx, halfIdx, lastIdx, arrayHolder, animations) {
-    let x = firstIdx;
-    let y = firstIdx;
-    let z = halfIdx + 1;
-    while (y <= halfIdx && z <= lastIdx) {
-        animations.push([y, z]);
-        animations.push([y, z]);
-        if (arrayHolder[y] <= arrayHolder[z]) {
-            animations.push([x, arrayHolder[y]]);
-            arrayMain[x++] = arrayHolder[y++];
-        } else {
-            animations.push([x, arrayHolder[z]]);
-            arrayMain[x++] = arrayHolder[z++];
-        }
-    }
-    while (y <= halfIdx) {
-        animations.push([y, y]);
-        animations.push([y, y]);
-        animations.push([x, arrayHolder[y]]);
-        arrayMain[x++] = arrayHolder[y++];
-    }
-    while (z <= lastIdx) {
-        animations.push([z, z]);
-        animations.push([z, z]);
-        animations.push([x, arrayHolder[z]]);
-        arrayMain[x++] = arrayHolder[z++];
-    }
-}
-
-function mergeSortAction() {
-    const animations = mergeSort(array)
-    for (let i = 0; i < animations.length; i++) {
-        const isColorChange = i % 3 !== 2;
-        if (isColorChange) {
-            const [indOneIdx, indTwoIdx] = animations[i];
-            const indOneStyle = individualColumn[indOneIdx].style;
-            const indTwoStyle = individualColumn[indTwoIdx].style;
-            const color = i % 3 === 0 ? '#228CDB' : 'whitesmoke';
-            setTimeout(() => {
-                indOneStyle.backgroundColor = color;
-                indTwoStyle.backgroundColor = color;
-            }, i * 4);
-        } else {
-            const [indOneIdx, heightNew] = animations[i];
-            const indOneStyle = individualColumn[indOneIdx].style;
-            setTimeout(() => {
-                indOneStyle.height = `${heightNew}px`;
-                sortVerification()
-            }, i * 4);
-        }
-    }
-}
-
-// function verifies if array and divs are sorted
+// function verifies if divs are sorted and resets button functionality
 function sortVerification() {
     for(let arrayIndex = 1; arrayIndex < array.length; arrayIndex++) {
         let arrayIndex1 = individualColumn[arrayIndex -1].style.height;
@@ -305,6 +137,212 @@ function sortVerification() {
             resetButton.style.color = 'black'
             flagResetButton = 1;
             return;
+        }
+    }
+}
+
+/*
+-----------------------
+Merge Sort Functionality
+-----------------------
+*/
+
+// Initializes merge sort
+function mergeSortInit(array) {
+    const animations = [];
+    if (array.length <= 1) return array;
+    const dynamicArray = array.slice();
+    mergeSortMain(array, 0, array.length - 1, dynamicArray, animations);
+    return animations;
+}
+
+// Function handles recursion and data by adding values to animations array.
+function mergeSortMain(arrayMain, firstIdx, lastIdx, dynamicArray, animations) {
+    if (firstIdx === lastIdx) return;
+    const halfIdx = Math.floor((firstIdx + lastIdx) / 2);
+    mergeSortMain(dynamicArray, firstIdx, halfIdx, arrayMain, animations);
+    mergeSortMain(dynamicArray, halfIdx + 1, lastIdx, arrayMain, animations);
+    let x = firstIdx;
+    let y = firstIdx;
+    let z = halfIdx + 1;
+    while (y <= halfIdx && z <= lastIdx) {
+        animations.push([y, z]);
+        animations.push([y, z]);
+        if (dynamicArray[y] <= dynamicArray[z]) {
+            animations.push([x, dynamicArray[y]]);
+            arrayMain[x++] = dynamicArray[y++];
+        } else {
+            animations.push([x, dynamicArray[z]]);
+            arrayMain[x++] = dynamicArray[z++];
+        }
+    }
+    while (y <= halfIdx) {
+        animations.push([y, y]);
+        animations.push([y, y]);
+        animations.push([x, dynamicArray[y]]);
+        arrayMain[x++] = dynamicArray[y++];
+    }
+    while (z <= lastIdx) {
+        animations.push([z, z]);
+        animations.push([z, z]);
+        animations.push([x, dynamicArray[z]]);
+        arrayMain[x++] = dynamicArray[z++];
+    }
+}
+
+// function handles visialization
+function mergeSortAnimation() {
+    const animations = mergeSortInit(array)
+    for (let i = 0; i < animations.length; i++) {
+        const isColorChange = i % 3 !== 2;
+        if (isColorChange) {
+            const [indOneIdx, indTwoIdx] = animations[i];
+            const indOneStyle = individualColumn[indOneIdx].style;
+            const indTwoStyle = individualColumn[indTwoIdx].style;
+            const color = i % 3 === 0 ? '#228CDB' : 'white';
+            setTimeout(() => {
+                indOneStyle.backgroundColor = color;
+                indTwoStyle.backgroundColor = color;
+            }, i * 5);
+        } else {
+            const [indOneIdx, heightNew] = animations[i];
+            const indOneStyle = individualColumn[indOneIdx].style;
+            setTimeout(() => {
+                indOneStyle.height = `${heightNew}px`;
+                sortVerification();
+            }, i * 5);
+        }
+    }
+}
+
+/*
+-----------------------
+Quick Sort Functionality
+-----------------------
+*/
+
+function quickSortInit(first, last) {
+    const animations = [];
+    quickSortMain(first, last, animations);
+    return animations
+}
+
+// function sorting divs utilizing the popular quick sort algorhitm. first, last- arguments for recursion purposes.
+function quickSortMain(first, last, animations) {
+    if (first >= last) return;
+    let bubbleIndex = first;
+    let pivotValue = array[last];
+    for (let i = first; i < last; i++) {
+        if (array[i] < pivotValue) {
+            animations.push([i, i])
+            animations.push([i, i])
+            swap(array, i, bubbleIndex); 
+            animations.push([bubbleIndex++, i])
+        }
+    }
+    swapPivot(bubbleIndex, first, last, animations);
+}
+
+function swapPivot(bubbleIndex, first, last, animations) {
+    animations.push([bubbleIndex, bubbleIndex, "pivot"]);
+    animations.push([bubbleIndex, bubbleIndex, "pivot"]);
+    swap(array, bubbleIndex, last);
+    animations.push([last, bubbleIndex, "pivot"]);
+    Promise.all[
+        quickSortMain(bubbleIndex + 1, last, animations),
+        quickSortMain(first, bubbleIndex - 1, animations)
+    ]
+}
+
+function quickSortAnimation(first, last) {
+    const animations = quickSortInit(first, last);
+    for (let i = 0; i < animations.length; i++) {
+        const isColorChange = i % 3 !== 2;
+        if(isColorChange) {
+            const [indOneIdx, indTwoIdx] = animations[i];
+            const indOneStyle = individualColumn[indOneIdx].style;
+            const indTwoStyle = individualColumn[indTwoIdx].style;
+            const animationValues = animations[i].slice(2, 3);
+            const isPivot = animationValues[0] === "pivot";
+            if(isPivot) {
+                const color = i % 3 === 0 ? '#228CDB' : 'white';
+                setTimeout(() => {
+                    indOneStyle.backgroundColor = color;
+                    indTwoStyle.backgroundColor = color;
+                }, i * 5)
+            } else {
+                const color = i % 3 === 0 ? '#890023' : 'white';
+                setTimeout(() => {
+                    indOneStyle.backgroundColor = color;
+                    indTwoStyle.backgroundColor = color;
+                }, i * 5);
+            }
+        } else {
+            const [indOneIdx, indTwoIdx] = animations[i];
+            const indOneStyle = individualColumn[indOneIdx].style;
+            const indTwoStyle = individualColumn[indTwoIdx].style;
+            setTimeout(() => {
+                const indOneInheritedStyle = indOneStyle.height;
+                indOneStyle.height = indTwoStyle.height;
+                indTwoStyle.height = indOneInheritedStyle;
+                sortVerification();
+            }, i * 5);
+        }
+    }
+}
+
+/*
+-----------------------
+Bubble Sort Functionality
+-----------------------
+*/
+
+function bubbleSortInit() {
+    const animations = []
+    var bubbleSortRecursiveIndex = 0;
+    bubbleSortMain(animations, bubbleSortRecursiveIndex)
+    return animations;
+}
+
+function bubbleSortMain(animations, bubbleSortRecursiveIndex) {
+    if (bubbleSortRecursiveIndex >= arrayLength) return;
+    for (bubbleSortIndex = 0; bubbleSortIndex < array.length - bubbleSortRecursiveIndex - 1; bubbleSortIndex++) {
+        a = bubbleSortIndex;
+        b = bubbleSortIndex + 1;
+        if (array[a] > array[b]) {
+            animations.push([a, b]);
+            animations.push([a, b]);
+            swap(array, a, b);
+            animations.push([b, a]);
+        }
+    }
+    bubbleSortRecursiveIndex++;
+    bubbleSortMain(animations, bubbleSortRecursiveIndex);
+}
+
+function bubbleSortAnimation() {
+    const animations = bubbleSortInit(array)
+    for (let i = 0; i < animations.length; i++) {
+        const isColorChange = i % 3 !== 2;
+        if (isColorChange) {
+            const [indOneIdx, indTwoIdx] = animations[i];
+            const indOneStyle = individualColumn[indOneIdx].style;
+            const indTwoStyle = individualColumn[indTwoIdx].style;
+            const color = i % 3 === 0 ? '#890023' : 'white';
+            setTimeout(() => {
+                indOneStyle.backgroundColor = color;
+                indTwoStyle.backgroundColor = color;
+            }, i * 2.5);
+        } else {
+            const [indOneIdx, indTwoIdx] = animations[i];
+            const indOneStyle = individualColumn[indOneIdx].style;
+            const indTwoStyle = individualColumn[indTwoIdx].style;
+            setTimeout(() => {
+                const indOneInheritedStyle = indOneStyle.height;
+                indOneStyle.height = indTwoStyle.height;
+                indTwoStyle.height = indOneInheritedStyle;
+                sortVerification();
+            }, i * 2.5);
         }
     }
 }
