@@ -42,6 +42,7 @@ function resetArray() {
         document.getElementById('columns').remove();
         document.getElementById('wrapper').insertAdjacentHTML('beforeend', '<div id="columns"></div>');
         randomArray();
+        changeColors('rgb(220, 220, 220)', 'black', 'rgb(220, 220, 220)', 'black');
         flagIsReset = true;
     }
 }
@@ -90,13 +91,13 @@ function addEvents(action) {
 }
 
 // function changes button colors, UX purposes.
-function changeColors(color, textColor) {
-    resetButton.style.backgroundColor = color;
+function changeColors(color, textColor, goColor, goTextColor) {
+    resetButton.style.backgroundColor = goColor;
     quickButton.style.backgroundColor = color;
     bubbleButton.style.backgroundColor = color;
     mergeButton.style.backgroundColor = color;
 
-    resetButton.style.color = textColor;
+    resetButton.style.color = goTextColor;
     quickButton.style.color = textColor;
     bubbleButton.style.color = textColor;
     mergeButton.style.color = textColor;
@@ -112,12 +113,12 @@ function swap(arr, a, b) {
 function start() {
     flagIsReset = false;
     addEvents('removeEvents');
-    changeColors('#890023', 'white');
+    changeColors('#890023', 'white', '#890023', 'white');
 }
 
 function finish() {
     flagResetButton = true;
-    changeColors('rgb(220, 220, 220)', 'black');
+    changeColors('#890023', 'white', 'rgb(220, 220, 220)', 'black');
     console.log("finished");
 }
 
@@ -189,19 +190,19 @@ var mergeSort = {
                 setTimeout(() => {
                     indOneStyle.backgroundColor = color;
                     indTwoStyle.backgroundColor = color;
-                }, i * 8);
+                }, i * 6);
             } else {
                 const [indOneIdx, heightNew] = animations[i];
                 const indOneStyle = individualColumn[indOneIdx].style;
                 setTimeout(() => {
                     indOneStyle.height = `${heightNew}%`;
-                }, i * 8);
+                }, i * 6);
             }
         }
         setTimeout(() => {
             this.flag = true;
             finish();
-        }, animations.length * 8);
+        }, animations.length * 6);
     }
 
 }
@@ -265,13 +266,13 @@ var quickSort = {
                     setTimeout(() => {
                         indOneStyle.backgroundColor = color;
                         indTwoStyle.backgroundColor = color;
-                    }, i * 8)
+                    }, i * 6)
                 } else {
                     const color = i % 3 === 0 ? '#890023' : 'white';
                     setTimeout(() => {
                         indOneStyle.backgroundColor = color;
                         indTwoStyle.backgroundColor = color;
-                    }, i * 8);
+                    }, i * 6);
                 }
             } else {
                 const [indOneIdx, indTwoIdx] = animations[i];
@@ -281,13 +282,13 @@ var quickSort = {
                     const indOneInheritedStyle = indOneStyle.height;
                     indOneStyle.height = indTwoStyle.height;
                     indTwoStyle.height = indOneInheritedStyle;
-                }, i * 8);
+                }, i * 6);
             }
         }
         setTimeout(() => {
             this.flag = true;
             finish();
-        }, animations.length * 8);
+        }, animations.length * 6);
     }
 
 }
@@ -337,7 +338,7 @@ var bubbleSort = {
                 setTimeout(() => {
                     indOneStyle.backgroundColor = color;
                     indTwoStyle.backgroundColor = color;
-                }, i * 3);
+                }, i * 2);
             } else {
                 const [indOneIdx, indTwoIdx] = animations[i];
                 const indOneStyle = individualColumn[indOneIdx].style;
@@ -346,13 +347,13 @@ var bubbleSort = {
                     const indOneInheritedStyle = indOneStyle.height;
                     indOneStyle.height = indTwoStyle.height;
                     indTwoStyle.height = indOneInheritedStyle;
-                }, i * 3);
+                }, i * 2);
             }
         }
         setTimeout(() => {
             this.flag = true;
             finish();
-        }, animations.length * 3);
+        }, animations.length * 2);
     }
 
 }
